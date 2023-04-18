@@ -1,0 +1,96 @@
+class LinkedListNode:
+    def __init__(self, value=None):
+        self.value = value
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+    
+    def append(self, value):
+        new_node = LinkedListNode(value)
+        if self.head is None:
+            self.head = new_node
+        else:
+            self.tail.next = new_node
+        self.tail = new_node
+        self.size += 1
+    
+    def insert(self, value, index):
+        if index < 0 or index > self.size:
+            raise Exception('Invalid index')
+        new_node = LinkedListNode(value)
+        if index == 0:
+            new_node.next = self.head
+            self.head = new_node
+            if self.tail is None:
+                self.tail = new_node
+        elif index == self.size:
+            self.tail.next = new_node
+            self.tail = new_node
+        else:
+            prev_node = self._get_node(index-1)
+            new_node.next = prev_node.next
+            prev_node.next = new_node
+        self.size += 1
+    
+    def remove(self, index):
+        if index < 0 or index >= self.size:
+            raise Exception('Invalid index')
+        if index == 0:
+            value = self.head.value
+            self.head = self.head.next
+            if self.tail is None:
+                self.tail = None
+        else:
+            prev_node = self._get_node(index-1)
+            value = prev_node.next.value
+            prev_node.next = prev_node.next.next
+            if index == self.size - 1:
+                self.tail = prev_node
+        self.size -= 1
+        return value
+    
+    def get(self, index):
+        if index < 0 or index >= self.size:
+            raise Exception('Invalid index')
+        return self._get_node(index).value
+    
+    def _get_node(self, index):
+        node = self.head
+        for i in range(index):
+            node = node.next
+        return node
+    
+    def insertion_sort(self):
+        if self.size <= 1:
+            return
+        
+        for i in range(1, self.size):
+            value = self.get(i)
+            j = i - 1
+            while j >= 0 and self.get(j) > value:
+                self.insert(self.remove(i), j)
+                j -= 1
+
+# contoh penggunaan
+my_list = LinkedList()
+my_list.append(8)
+my_list.append(7)
+my_list.append(1)
+my_list.append(4)
+my_list.append(6)
+my_list.append(2)
+my_list.append(3)
+
+print("Sebelum diurutkan: ")
+for i in range(my_list.size):
+    print(my_list.get(i), end=" ")
+
+my_list.insertion_sort()
+
+print("\nSetelah diurutkan: ")
+for i in range(my_list.size):
+    print(my_list.get(i), end=" ")
